@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CIFAR-10 image generation</title>
+<style>body{font:17px/1.55 system-ui;max-width:980px;margin:48px auto;padding:0 24px;color:#171717}h1{font-size:34px;margin-bottom:8px}label{display:inline-flex;flex-direction:column;margin:12px 16px 20px 0}input,select,button{font:inherit;padding:8px;border:1px solid #888;border-radius:5px}button{background:#172936;color:white;cursor:pointer}button:disabled{opacity:.5}img{image-rendering:pixelated;max-width:100%;width:512px;border:1px solid #aaa}#status{white-space:pre-wrap}a{color:#174c74}.caption{color:#555;max-width:760px}</style>
+<h1>CIFAR-10 image generation</h1><p>Compare two trained, unconditional image generators. Each output is a new 32 × 32 RGB image.</p>
+<form id="form"><label>Model<select id="model"><option value="ebm">Energy model</option><option value="diffusion">Diffusion U-Net</option></select></label>
+<label>Images<input id="count" type="number" min="1" max="16" step="1" value="16" required></label>
+<label>Random seed<input id="seed" type="number" min="0" max="2147483647" step="1" value="42" required></label>
+<label>Sampling steps<input id="steps" type="number" min="1" max="120" step="1" value="60" required></label>
+<button id="run">Generate images</button></form><p id="status" role="status">Choose a model, then generate. CPU sampling may take several seconds.</p>
+<img id="output" alt="Generated image contact sheet" hidden><p><a id="download" hidden download="cifar10_samples.png">Download PNG</a></p>
+<p class="caption">These small teaching models have limited image quality. A low denoising loss or low energy does not guarantee recognizable objects. The enlarged pixels show the original output without enhancement.</p>
+<p><a href="/docs">API documentation</a> · <a id="metadata" href="/ebm/model">Training and checkpoint details</a></p>
+<script>
+const model=document.querySelector('#model'),steps=document.querySelector('#steps');
+model.onchange=()=>{steps.value=model.value==='ebm'?60:50;steps.min=model.value==='ebm'?1:2;steps.max=model.value==='ebm'?120:100;document.querySelector('#metadata').href='/'+model.value+'/model'};
+document.querySelector('#form').onsubmit=async event=>{event.preventDefault();const button=document.querySelector('#run'),status=document.querySelector('#status');button.disabled=true;status.textContent='Generating…';const started=performance.now();try{const response=await fetch('/'+model.value+'/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({count:Number(document.querySelector('#count').value),seed:Number(document.querySelector('#seed').value),steps:Number(steps.value)})});const data=await response.json();if(!response.ok)throw Error(JSON.stringify(data));const url='data:image/png;base64,'+data.grid_png_base64;const image=document.querySelector('#output');image.src=url;image.hidden=false;const download=document.querySelector('#download');download.href=url;download.hidden=false;status.textContent=`${data.count} images · seed ${data.seed} · ${((performance.now()-started)/1000).toFixed(2)} s · HTTP ${response.status}`;}catch(error){status.textContent='Error: '+error.message;}finally{button.disabled=false}};
+</script></html>

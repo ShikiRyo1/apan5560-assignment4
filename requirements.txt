@@ -1,0 +1,11 @@
+# CPU inference. uv.lock is the authoritative transitive dependency lock.
+--extra-index-url https://download.pytorch.org/whl/cpu
+fastapi==0.141.1
+uvicorn==0.54.0
+pydantic==2.14.0
+spacy==3.8.16
+en-core-web-lg @ https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-3.8.0/en_core_web_lg-3.8.0-py3-none-any.whl#sha256=293e9547a655b25499198ab15a525b05b9407a75f10255e405e8c3854329ab63
+torch==2.11.0+cpu
+pillow==12.3.0
+numpy==2.5.3
+python-multipart==0.0.22

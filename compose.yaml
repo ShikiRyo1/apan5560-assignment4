@@ -1,0 +1,10 @@
+name: apan5560-assignment4
+services:
+  api:
+    build: .
+    ports:
+      - "127.0.0.1:8010:8000"
+    environment:
+      OMP_NUM_THREADS: "2"
+      MKL_NUM_THREADS: "2"
+    restart: unless-stopped

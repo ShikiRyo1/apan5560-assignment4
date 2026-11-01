@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+data/
+.env
+.DS_Store
+results/**/training_state.pt
+results/**/interim_*
+results/docker_*.log

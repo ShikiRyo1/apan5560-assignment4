@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assignment 3 · MNIST GAN</title>
+<style>
+body{margin:0;background:#eef2f6;color:#172b40;font:16px system-ui,sans-serif}
+main{max-width:1000px;margin:40px auto;padding:0 24px}
+small{font-weight:700;color:#486582;letter-spacing:.08em}h1{font-size:38px;margin:10px 0}
+p{line-height:1.65;color:#465b70}.panel{background:white;padding:26px;border-radius:14px;box-shadow:0 8px 22px #16314e0c;margin:22px 0}
+form{display:flex;align-items:end;gap:20px;flex-wrap:wrap}label{display:grid;gap:8px;font-weight:600}
+input{font:inherit;padding:10px;width:140px;border:1px solid #a9b8c7;border-radius:6px}
+button{font:inherit;font-weight:700;background:#174a73;color:white;border:0;padding:13px 24px;border-radius:6px;cursor:pointer}
+button:disabled{opacity:.5}a{color:#174a73}#status{min-height:1.5em}#grid{width:min(100%,560px);image-rendering:pixelated;background:black}
+.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.meta span{display:block;color:#64798d;font-size:13px}.meta strong{display:block;margin-top:8px}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#eef2f6;padding:14px;font-size:13px}footer{font-size:14px;color:#64798d}
+</style>
+</head>
+<body><main>
+<small>APANPS5560 · ASSIGNMENT 3</small>
+<h1>Generate handwritten digits</h1>
+<p>A convolutional GAN trained on 60,000 MNIST training images. Each 100-dimensional noise vector produces one 28 × 28 grayscale image.</p>
+<div class="panel meta">
+<div><span>MODEL</span><strong>MNIST GAN · 3.0.0</strong></div>
+<div><span>TRAINING</span><strong id="epochs">Loading metadata…</strong></div>
+<div><span>INFERENCE</span><strong>CPU · bundled checkpoint</strong></div>
+</div>
+<div class="panel">
+<form id="generate-form">
+<label>Number of images<input id="count" name="count" type="number" min="1" max="64" value="16" required></label>
+<label>Random seed<input id="seed" name="seed" type="number" min="0" max="2147483647" value="42" required></label>
+<button id="generate" type="submit">Generate digits</button>
+<a href="/docs" target="_blank" rel="noopener">API documentation</a>
+</form>
+<p id="status" role="status">Choose a count and seed, then generate. The same seed and count reproduce the same CPU output.</p>
+<img id="grid" alt="Generated handwritten digit contact sheet" hidden>
+<p><a id="download" download="mnist-gan.png" hidden>Download the original PNG grid</a></p>
+<details><summary>Request and model evidence</summary><pre id="evidence">POST /gan/generate</pre></details>
+</div>
+<footer>This is unconditional generation: the seed does not select a digit label. Every result is shown in order. Some digits may be ambiguous or malformed. Display scaling uses nearest-neighbor pixels; downloaded images retain their original resolution.</footer>
+</main>
+<script>
+let metadata = {};
+fetch('/gan/model').then(r=>r.json()).then(m=>{
+ metadata=m;
+ document.getElementById('epochs').textContent=`${m.training_epochs} complete epochs · MNIST`;
+}).catch(()=>{document.getElementById('epochs').textContent='Metadata unavailable'});
+document.getElementById('generate-form').addEventListener('submit',async event=>{
+ event.preventDefault();
+ const button=document.getElementById('generate');
+ const status=document.getElementById('status');
+ const body={count:Number(document.getElementById('count').value),seed:Number(document.getElementById('seed').value)};
+ button.disabled=true;status.textContent='Generating with the bundled CPU model…';
+ try{
+  const response=await fetch('/gan/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const result=await response.json();
+  if(!response.ok)throw Error(JSON.stringify(result.detail));
+  const url=`data:image/png;base64,${result.grid_png_base64}`;
+  const image=document.getElementById('grid');image.src=url;image.hidden=false;
+  const download=document.getElementById('download');download.href=url;download.hidden=false;
+  status.textContent=`Generated ${result.count} images · seed ${result.seed} · each image 28 × 28 pixels`;
+  document.getElementById('evidence').textContent=JSON.stringify({request:body,model:metadata,response:{count:result.count,seed:result.seed,image_shape:result.image_shape,grid_shape:result.grid_shape}},null,2);
+ }catch(error){status.textContent=`Generation failed: ${error.message}`}
+ finally{button.disabled=false}
+});
+</script></body></html>

@@ -1,0 +1,25 @@
+{
+  "kind": "diffusion",
+  "data": "H:\\Last_Semest_AA\\APPLIED GENERATIVE AI\\\u8bfe\u7a0b\u6570\u636e",
+  "epochs": 30,
+  "batch_size": 64,
+  "langevin_steps": 40,
+  "lr": 0.0002,
+  "seed": 42,
+  "device": "cuda",
+  "dataset": "CIFAR-10",
+  "training_samples": 50000,
+  "image_shape": [
+    3,
+    32,
+    32
+  ],
+  "checkpoint_selection": "final predeclared epoch; test set not used for selection",
+  "torch_version": "2.11.0+cu128",
+  "python_version": "3.12.13",
+  "device_name": "NVIDIA GeForce RTX 3070",
+  "parameter_count": 1528803,
+  "completed_epochs": 30,
+  "optimizer_steps": 23460,
+  "elapsed_seconds": 1054.9934989999747
+}

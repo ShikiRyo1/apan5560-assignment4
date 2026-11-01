@@ -1,0 +1,11 @@
+{
+  "evaluation_seed": 8761,
+  "heldout_scope": "first 1024 test images, random timestep/noise; one fixed post-training diagnostic, no selection",
+  "diffusion_noise_mse": 0.03387479262892157,
+  "zero_predictor_mse": 0.9993980601429939,
+  "ebm_initial_energy": 5.371770858764648,
+  "ebm_generated_energy": 0.03443557769060135,
+  "ebm_input_change_mse": 0.23786573112010956,
+  "all_finite": true,
+  "quality_limit": "Noise MSE and lower energy do not establish image quality or convergence; no FID measured."
+}
