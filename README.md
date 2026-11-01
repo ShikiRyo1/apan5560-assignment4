@@ -74,7 +74,10 @@ All 50,000 official CIFAR-10 training images are used each epoch, normalized
 to [-1,1]. Class labels are intentionally unused. Seed is 42; optimizer is
 Adam at 0.0002. Final epochs were selected in advance; test images were not
 used for checkpoint selection. Actual run summaries, epoch losses and sample
-grids are in `results/` and `TRAINING_REPORT.md`.
+grids are retained in the GitHub repository's `results/` and
+[training report](https://github.com/ShikiRyo1/apan5560-assignment4/blob/main/TRAINING_REPORT.md).
+The Canvas ZIP contains only runtime/training source, required weights and
+deployment instructions; test artifacts and training plots stay in the repository.
 
 | Model | Architecture / objective | Actual training |
 |---|---|---|
@@ -119,11 +122,12 @@ resume. Dataset and environment folders are excluded from the submission.
 - `app/main.py`: typed FastAPI requests/responses and existing routes.
 - `app/static/advanced_demo.html`: interactive client for the same API.
 - `models/`: four real course checkpoints, including both new generators.
-- `tests/test_advanced.py`: meaningful tensor, sampler, schedule and autograd checks.
+- Repository `tests/test_advanced.py`: tensor, sampler, schedule and autograd checks.
 - `pyproject.toml`, `uv.lock`, `Dockerfile`, `compose.yaml`: reproducible runtime.
 
-Run core tests with `uv run pytest -q`. Independent HTTP and fresh-ZIP Docker
-checks are summarized in `VERIFICATION.md`. The separate answers
+After cloning the full repository, run core tests with `uv run pytest -q`.
+Independent HTTP and fresh-ZIP Docker checks are summarized in the repository's
+[verification record](https://github.com/ShikiRyo1/apan5560-assignment4/blob/main/VERIFICATION.md). The separate answers
 PDF covers all nine theoretical/calculation questions with working.
 
 ## References and AI assistance
